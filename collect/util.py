@@ -1,3 +1,4 @@
+import os
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -5,6 +6,16 @@ from bs4 import BeautifulSoup
 def get_stocks_from_file(filename):
     with open(filename) as fp:
         return [l.rstrip() for l in fp.readlines()]
+
+def download_from_url(url, filename, overwrite=False):
+    if not overwrite and os.path.isfile(filename):
+        return filename
+    request = requests.get(url)
+    with open(filename, 'wb') as fp:
+        for chunk in request.iter_content(chunk_size=1024):
+            if chunk:
+                fp.write(chunk)
+    return filename
 
 def get_soup_from_url(url):
     """
