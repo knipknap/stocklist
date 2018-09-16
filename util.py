@@ -18,6 +18,8 @@ def resolve_value(value):
     """
     Convert "1k" to 1 000, "1m" to 1 000 000, etc.
     """
+    if value is None:
+        return None
     tens = dict(k=10e3, m=10e6, b=10e9, t=10e12)
     value = value.replace(',', '')
     match = re.match(r'(-?\d+\.?\d*)([kmbt]?)$', value, re.I)

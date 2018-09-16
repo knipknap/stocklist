@@ -41,16 +41,44 @@ class YahooCompany(object):
         pbv_label = soup.find("span", string="Price/Book")
         td_label = soup.find("span", string="Total Debt")
         tde_label = soup.find("span", string="Total Debt/Equity")
-        cr_label = soup.find("span", string="Current Ratio")
         fw_dividend_label = soup.find("span", string="Forward Annual Dividend Rate")
+        cr_label = soup.find("span", string="Current Ratio")
+        try:
+            total_debt = td_label.parent.nextSibling.text
+        except AttributeError:
+            total_debt = None
+        try:
+            total_debt_equity = tde_label.parent.nextSibling.text
+        except AttributeError:
+            total_debt_equity = None
+        try:
+            pe_trailing = pet_label.parent.nextSibling.text
+        except AttributeError:
+            pe_trailing = None
+        try:
+            pe_forward = pef_label.parent.nextSibling.text
+        except AttributeError:
+            pe_forward = None
+        try:
+            pbv = pbv_label.parent.nextSibling.text
+        except AttributeError:
+            pbv = None
+        try:
+            dividend_forward = fw_dividend_label.parent.nextSibling.text
+        except AttributeError:
+            dividend_forward = None
+        try:
+            cr = cr_label.parent.nextSibling.text
+        except AttributeError:
+            cr = None
         result = {'price': resolve_value(price),
-                  'total-debt': resolve_value(td_label.parent.nextSibling.text),
-                  'total-debt-equity': resolve_value(tde_label.parent.nextSibling.text),
-                  'pe-trailing': resolve_value(pet_label.parent.nextSibling.text),
-                  'pe-forward': resolve_value(pef_label.parent.nextSibling.text),
-                  'p-bv': resolve_value(pbv_label.parent.nextSibling.text),
-                  'dividend-forward': resolve_value(fw_dividend_label.parent.nextSibling.text),
-                  'current-ratio': resolve_value(cr_label.parent.nextSibling.text)}
+                  'total-debt': resolve_value(total_debt),
+                  'total-debt-equity': resolve_value(total_debt_equity),
+                  'pe-trailing': resolve_value(pe_trailing),
+                  'pe-forward': resolve_value(pe_forward),
+                  'p-bv': resolve_value(pbv),
+                  'dividend-forward': resolve_value(dividend_forward),
+                  'current-ratio': resolve_value(cr)}
         self._yahoo_key_stats = result
         return self._yahoo_key_stats
 
@@ -62,10 +90,16 @@ class YahooCompany(object):
 
         # Find some entry points in the HTML.
         re_label = soup.find("span", string="Revenue")
-        re_spans = re_label.parent.parent.select('td > span')[1:]
+        try:
+            re_spans = re_label.parent.parent.select('td > span')[1:]
+        except AttributeError:
+            re_spans = []
 
         ni_label = soup.find("span", string="Net Income Applicable To Common Shares")
-        ni_spans = ni_label.parent.parent.select('td > span')[1:]
+        try:
+            ni_spans = ni_label.parent.parent.select('td > span')[1:]
+        except AttributeError:
+            ni_spans = []
 
         tre_label = soup.find("span", string="Total Revenue")
         gp_label = soup.find("span", string="Gross Profit")
