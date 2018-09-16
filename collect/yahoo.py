@@ -1,7 +1,7 @@
 from datetime import datetime
 from itertools import islice
 from collections import OrderedDict
-from util import get_soup_from_url, resolve_value
+from .util import get_soup_from_url, resolve_value
 
 yahoo_key_stats_url = 'https://finance.yahoo.com/quote/%s/key-statistics/?guccounter=1'
 yahoo_income_statement_url = 'https://finance.yahoo.com/quote/%s/financials/'

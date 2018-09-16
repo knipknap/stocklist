@@ -1,5 +1,5 @@
 import json
-from util import get_soup_from_url
+from .util import get_soup_from_url
 
 stock_list_url = 'https://financialmodelingprep.com/api/stock/losers'
 profile_url = 'https://financialmodelingprep.com/public/api/company/profile/%s'

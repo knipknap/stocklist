@@ -3,11 +3,11 @@ import os
 import sys
 import json
 from argparse import ArgumentParser
-from util import get_stocks_from_file
-from nasdaq import get_nasdaq_traded_stocks, get_nasdaq_listed_stocks
-from fmp import FmpCompany
-from yahoo import YahooCompany
-from graham import graham_filter
+from collect.util import get_stocks_from_file
+from collect.nasdaq import get_nasdaq_traded_stocks, get_nasdaq_listed_stocks
+from collect.fmp import FmpCompany
+from collect.yahoo import YahooCompany
+from analytics.graham import graham_filter
 
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
 if not os.path.isdir(data_dir):
