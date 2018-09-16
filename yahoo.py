@@ -231,7 +231,7 @@ class YahooCompany(object):
         if not ni:
             return None
         try:
-            return dict((k, int(v)*1000000) for (k, v) in ni.items())
+            return dict((k, int(v)) for (k, v) in ni.items())
         except ValueError:
             return None
 
