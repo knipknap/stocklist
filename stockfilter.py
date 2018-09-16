@@ -119,7 +119,7 @@ if action == 'pull':
         stock_list = get_nasdaq_listed_stocks()
     else:
         parser.error('unknown source: ' + repr(source))
-    for l in get_nasdaq_listed_stocks():
+    for l in stock_list:
         print(l)
     sys.exit(0)
 
