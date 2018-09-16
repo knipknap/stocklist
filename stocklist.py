@@ -89,14 +89,14 @@ def run(symbol):
     if not company['total-debt']:
         print(" !Incomplete data (Total Debt), skipping")
         return
-    if not company['total-debt-equity']:
-        print(" !Incomplete data (Total Debt/Equity), skipping")
-        return
     if not company['total-assets']:
         print(" !Incomplete data (Total Assets), skipping")
         return
     if not company['current-ratio']:
         print(" !Incomplete data (Current Ratio), skipping")
+        return
+    if not company['p-bv']:
+        print(" !Incomplete data (Price to Book Value ratio), skipping")
         return
     if not company['latest-net-income']:
         print(" !Incomplete data (Net Income), skipping")
