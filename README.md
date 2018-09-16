@@ -7,7 +7,7 @@ for stock data collection and analysis.
 
 Data sources are all completely free, no sign up required:
 - NASDAQ symbol directory
-- Yahoo finance API
+- Yahoo finance (web scraping, no API)
 - Financial Modelling Prep API (to collect a rating for each stock)
 
 ## Usage
