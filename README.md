@@ -67,16 +67,17 @@ $ ./stocklist.py graham LEO.DE
 LEO.DE:
  Using cached version
  !Warning: No rating found, assuming 3
- Rating: 3
- Total Debt/Equity: 7159500000
- Total Assets: 31263100000
- Total Debt to Total Asset ratio: 0.22900799984646436
- Current Ratio: 1.06
- Net Income: 145022
+ Rating: 3 -> Ok
  Share Price: 34.77
- P/E (trailing): 8.52
- P/E (forward): 7.61
- Price to Book Value: 1.04
- Dividend (forward): 1.4
-  LEO.DE is looking good
+ Total Debt: 7159500000
+ Total Debt/Equity: 65.31
+ Total Assets: 31263100000
+ Total Debt to Total Asset ratio: 0.22900799984646436 -> Ok
+ Current Ratio: 1.06 -> Ok
+ Net Income: 145022 -> Ok
+ P/E (trailing): 8.52 -> Ok
+ P/E (forward): 7.61 -> Ok
+ Price to Book Value: 1.04 -> Ok
+ Dividend (forward): 1.4 -> Ok
+ -> Passed Graham filter
 ```
