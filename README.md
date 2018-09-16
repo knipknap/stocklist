@@ -20,11 +20,18 @@ You'll need Python 3 with the modules listed in requirements.txt.
 
 ## Supported Operations
 
-### Pull a list of stock symbols from NASDAQ
+### Get a list of stock symbols from NASDAQ
 
 ```
-./stocklist.py pull nasdaq-traded > nasdaq_traded.txt
-./stocklist.py pull nasdaq-listed > nasdaq_listed.txt
+./stocklist.py dir nasdaq-traded > nasdaq_traded.txt
+./stocklist.py dir nasdaq-listed > nasdaq_listed.txt
+```
+
+### Pull fundamental data for a list of stock symbols
+
+```
+./stocklist.py pull AAPL LHA.DE
+./stocklist.py pull-bulk nasdaq-listed.txt
 ```
 
 ### Graham filter
@@ -49,5 +56,5 @@ To check one or more symbols for Benjamin Graham's 7 criteria:
 The same, but reading the symbols from a file:
 
 ```
-./stocklist.py grahamlist nasdaq_listed.txt
+./stocklist.py graham-bulk nasdaq_listed.txt
 ```

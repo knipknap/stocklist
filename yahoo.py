@@ -66,12 +66,12 @@ class YahooCompany(object):
         ni_spans = ni_label.parent.parent.select('td > span')[1:]
 
         tre_label = soup.find("span", string="Total Revenue")
-        gp_label = soup.find("span", string="Gross profit")
+        gp_label = soup.find("span", string="Gross Profit")
 
         # Extract dates for each year.
         dates = []
         for span in re_spans:
-            date = datetime.strptime(span.text, "%m/%d/%Y")
+            date = datetime.strptime(span.text, "%m/%d/%Y").strftime('%Y-%m-%d')
             dates.append(date)
 
         # Annual net income.
@@ -131,7 +131,7 @@ class YahooCompany(object):
         return self.yahoo_key_stats['total-debt-equity']
 
     @property
-    def pe(self):
+    def pe_trailing(self):
         """
         Price to earnings per share (trailing)
         """
@@ -196,13 +196,13 @@ class YahooCompany(object):
     def revenue(self):
         '''Returns revenue of stock in
         the past twelve months'''
-        return int(self.yahoo_income_statement['total-revenue'])
+        return self.yahoo_income_statement['total-revenue']
 
     @property
     def gross_profit(self):
         '''Returns gross profit of stock in
         the past twelve months'''
-        return int(self.yahoo_income_statement['gross-profit'])
+        return self.yahoo_income_statement['gross-profit']
 
     @property
     def share_price(self):
