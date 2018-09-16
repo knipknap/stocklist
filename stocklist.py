@@ -179,7 +179,7 @@ elif action == 'pull-bulk':
     except OSError:
         parser.error('error: ' + repr(filename))
     for symbol in stock_list:
-        pull(arg)
+        pull(symbol)
     sys.exit(0)
 
 elif action == 'graham':
