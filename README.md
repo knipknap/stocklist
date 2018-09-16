@@ -10,6 +10,10 @@ Data sources are all completely free, no sign up required:
 - Yahoo finance (web scraping, no API)
 - Financial Modelling Prep API (to collect a rating for each stock)
 
+## Requirements
+
+You'll need Python 3 with the modules listed in requirements.txt.
+
 ## Supported Operations
 
 ### Pull a list of stock symbols from NASDAQ
