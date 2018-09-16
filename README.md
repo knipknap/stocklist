@@ -40,7 +40,7 @@ strong value stocks. The criteria are:
 - Price to book value (P/BV) ratios less than 1.20
 - Must currently be paying dividends
 
-To check for one or more symbols for Benjamin Graham's 7 criteria:
+To check one or more symbols for Benjamin Graham's 7 criteria:
 
 ```
 ./stocklist.py graham AAPL LHA.DE
