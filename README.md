@@ -6,17 +6,8 @@ Disclaimer: If you plan on using this tool for making actual financial
 decisions in production, there is something wrong with you.
 Use it on your own risk.
 
-This is a personal experiment only. The repo contains functions I use
+This project is purely experimental. The repo contains functions I use
 for stock data collection and analysis.
-
-Data sources are all completely free, no sign up required:
-- NASDAQ symbol directory
-- Yahoo finance (web scraping, no API)
-- Financial Modelling Prep API (to collect a rating for each stock)
-
-## Requirements
-
-You'll need Python 3 with the modules listed in requirements.txt.
 
 ## Supported Operations
 
@@ -95,3 +86,14 @@ This also provides more options for sub-commands:
 ```
 $ ./stocklist.py graham --help
 ```
+
+## Data Sources
+
+The data sources are all completely free (as in money), with no sign up required:
+- NASDAQ symbol directory
+- Yahoo finance (web scraping, no API)
+- Financial Modelling Prep API (to collect a rating for each stock)
+
+## Requirements
+
+You'll need Python 3 with the modules listed in requirements.txt.
