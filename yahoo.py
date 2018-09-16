@@ -174,7 +174,7 @@ class YahooCompany(object):
         try:
             ni = next(islice(self.yahoo_income_statement.get('net-income').values(), 1))
             return int(ni)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, StopIteration):
             return None
 
     def get_net_income_series(self):
