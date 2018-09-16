@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is a personal experiment only. The repo contains function I use
+This is a personal experiment only. The repo contains functions I use
 for stock data collection and analysis.
 
 Data sources are all completely free, no sign up required:
