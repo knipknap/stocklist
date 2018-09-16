@@ -40,10 +40,12 @@ class YahooCompany(object):
         pef_label = soup.find("span", string="Forward P/E")
         pbv_label = soup.find("span", string="Price/Book")
         td_label = soup.find("span", string="Total Debt")
+        tde_label = soup.find("span", string="Total Debt/Equity")
         cr_label = soup.find("span", string="Current Ratio")
         fw_dividend_label = soup.find("span", string="Forward Annual Dividend Rate")
         result = {'price': resolve_value(price),
-                  'total-debt-equity': resolve_value(td_label.parent.nextSibling.text),
+                  'total-debt': resolve_value(td_label.parent.nextSibling.text),
+                  'total-debt-equity': resolve_value(tde_label.parent.nextSibling.text),
                   'pe-trailing': resolve_value(pet_label.parent.nextSibling.text),
                   'pe-forward': resolve_value(pef_label.parent.nextSibling.text),
                   'p-bv': resolve_value(pbv_label.parent.nextSibling.text),
@@ -124,9 +126,16 @@ class YahooCompany(object):
         return self._yahoo_analysis
 
     @property
+    def total_debt(self):
+        """
+        Total dept.
+        """
+        return self.yahoo_key_stats['total-debt']
+
+    @property
     def total_debt_equity(self):
         """
-        Total dept or equity.
+        Total dept/equity.
         """
         return self.yahoo_key_stats['total-debt-equity']
 

@@ -2,7 +2,7 @@
 import os
 import sys
 import json
-from optparse import OptionParser
+from argparse import ArgumentParser
 from util import get_stocks_from_file, resolve_value
 from nasdaq import get_nasdaq_traded_stocks, get_nasdaq_listed_stocks
 from fmp import FmpCompany
@@ -37,6 +37,7 @@ def fetch_symbol_data(symbol):
     yahoo_company = YahooCompany(symbol)
     return {'rating': fmp_company.rating,
             'share-price': yahoo_company.share_price,
+            'total-debt': yahoo_company.total_debt,
             'total-debt-equity': yahoo_company.total_debt_equity,
             'pe-trailing': yahoo_company.pe_trailing,
             'pe-forward': yahoo_company.pe_forward,
@@ -81,6 +82,9 @@ def run(symbol):
     if not company['rating']:
         print(" !Warning: No rating found, assuming 3")
         company['rating'] = 3
+    if not company['total-debt']:
+        print(" !Incomplete data (Total Debt), skipping")
+        return
     if not company['total-debt-equity']:
         print(" !Incomplete data (Total Debt/Equity), skipping")
         return
@@ -96,9 +100,10 @@ def run(symbol):
 
     # Dump some info...
     print(' Rating:', company['rating'])
+    print(' Total Debt:', company['total-debt'])
     print(' Total Debt/Equity:', company['total-debt-equity'])
     print(' Total Assets:', company['total-assets'])
-    td_ta_ratio = company['total-debt-equity']/company['total-assets']
+    td_ta_ratio = company['total-debt']/company['total-assets']
     print(' Total Debt to Total Asset ratio:', td_ta_ratio)
     print(' Current Ratio:', company['current-ratio'])
     print(' Net Income:', company['latest-net-income'])
@@ -137,70 +142,89 @@ def run(symbol):
         return
     print(" ", symbol, "is looking good")
 
-usage  = '%prog [options] action [action-options ...]'
-parser = OptionParser(usage=usage)
-options, args = parser.parse_args(sys.argv)
-args.pop(0)
+# Parse command line options.
+parser = ArgumentParser()
+subparsers = parser.add_subparsers(dest="action", title='Subcommands')
 
-try:
-    action = args.pop(0)
-except IndexError:
-    parser.error('missing action argument')
+# "dir" command.
+dir_parser = subparsers.add_parser('dir',
+                                   help='get a list of stock symbols')
+dir_parser.add_argument('source', type=str,
+                        choices=('nasdaq-traded', 'nasdaq-listed'),
+                        help='the name of the list')
 
-if action == 'dir':
-    try:
-        source = args.pop(0)
-    except IndexError:
-        parser.error('missing data source argument')
-    if source == 'nasdaq-traded':
+# "pull" and "pull-bulk" commands.
+pull_parser = subparsers.add_parser('pull',
+                                    help='gather fundamental data')
+pull_parser.add_argument('-f', '--force',
+                         dest='force',
+                         action='store_true',
+                         help='Overwrite existing data')
+pull_parser.add_argument('symbols', type=str,
+                         nargs='+',
+                         help='one or more stock symbols')
+
+pull_bulk_parser = subparsers.add_parser('pull-bulk',
+                                         help='gather data in bulk')
+pull_bulk_parser.add_argument('-f', '--force',
+                              dest='force',
+                              action='store_true',
+                              help='Overwrite existing data')
+pull_bulk_parser.add_argument('filename', type=str,
+                              help='file containing a list of stock symbols')
+
+# "graham" and "graham-bulk" commands.
+graham_parser = subparsers.add_parser('graham',
+        help='filter stocks by Graham analysis')
+graham_parser.add_argument('symbols', type=str,
+                           nargs='+',
+                           help='one or more stock symbols')
+graham_bulk_parser = subparsers.add_parser('graham-bulk',
+        help='filter stocks by Graham analysis (bulk)')
+graham_bulk_parser.add_argument('filename', type=str,
+                                 help='file containing a list of stock symbols')
+
+args = sys.argv[1:]
+args = parser.parse_args(args)
+
+if args.action == 'dir':
+    if args.source == 'nasdaq-traded':
         stock_list = get_nasdaq_traded_stocks()
-    elif source == 'nasdaq-listed':
+    elif args.source == 'nasdaq-listed':
         stock_list = get_nasdaq_listed_stocks()
     else:
-        parser.error('unknown source: ' + repr(source))
+        parser.error('unknown source: ' + repr(args.source))
     for l in stock_list:
         print(l)
     sys.exit(0)
 
-elif action == 'pull':
-    if not args:
-        parser.error('need at least one symbol')
-    for arg in args:
-        pull(arg)
+elif args.action == 'pull':
+    for symbol in args.symbols:
+        pull(symbol)
     sys.exit(0)
 
-elif action == 'pull-bulk':
+elif args.action == 'pull-bulk':
     try:
-        filename = args.pop(0)
-    except IndexError:
-        parser.error('missing filename argument')
-    try:
-        stock_list = get_stocks_from_file(filename)
-    except OSError:
-        parser.error('error: ' + repr(filename))
+        stock_list = get_stocks_from_file(args.filename)
+    except OSError as e:
+        parser.error(e)
     for symbol in stock_list:
         pull(symbol)
     sys.exit(0)
 
-elif action == 'graham':
-    if not args:
-        parser.error('need at least one symbol')
-    for arg in args:
-        run(arg)
+elif args.action == 'graham':
+    for symbol in args.symbols:
+        run(symbol)
     sys.exit(0)
 
-elif action == 'graham-bulk':
+elif args.action == 'graham-bulk':
     try:
-        filename = args.pop(0)
-    except IndexError:
-        parser.error('missing filename argument')
-    try:
-        stock_list = get_stocks_from_file(filename)
-    except OSError:
-        parser.error('error: ' + repr(filename))
+        stock_list = get_stocks_from_file(args.filename)
+    except OSError as e:
+        parser.error(e)
     for symbol in stock_list:
         run(symbol)
     sys.exit(0)
 
 else:
-    parser.error('unknown action: ' + repr(action))
+    parser.error('unknown action: ' + repr(args.action))
