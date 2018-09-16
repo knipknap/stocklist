@@ -7,6 +7,10 @@ from util import get_stocks_from_file, resolve_value
 from nasdaq import get_nasdaq_traded_stocks, get_nasdaq_listed_stocks
 from fmp import FmpCompany
 from yahoo import YahooCompany
+from colorama import Fore, Back, Style
+
+FAIL = Fore.RED+'-> Failed'+Style.RESET_ALL
+OK = Fore.GREEN+'-> Ok'+Style.RESET_ALL
 
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
 if not os.path.isdir(data_dir):
@@ -97,50 +101,47 @@ def run(symbol):
     if not company['latest-net-income']:
         print(" !Incomplete data (Net Income), skipping")
         return
-
-    # Dump some info...
-    print(' Rating:', company['rating'])
-    print(' Total Debt:', company['total-debt'])
-    print(' Total Debt/Equity:', company['total-debt-equity'])
-    print(' Total Assets:', company['total-assets'])
-    td_ta_ratio = company['total-debt']/company['total-assets']
-    print(' Total Debt to Total Asset ratio:', td_ta_ratio)
-    print(' Current Ratio:', company['current-ratio'])
-    print(' Net Income:', company['latest-net-income'])
-    print(' Share Price:', company['share-price'])
-    print(' P/E (trailing):', company['pe-trailing'])
-    print(' P/E (forward):', company['pe-forward'])
-    print(' Price to Book Value:', company['p-bv'])
-    print(' Dividend (forward):', company['dividend-forward'])
-
     pe = company['pe-forward'] if company['pe-forward'] else company['pe-trailing']
     if not pe:
         print(" !Incomplete data (P/E), skipping")
         return
 
-    # Graham filters.
-    if company['rating'] > 3:
-        print(' -> Bad rating')
+    # Filter and dump results to stdout...
+    results = []
+    results.append(FAIL if company['rating'] > 3 else OK)
+    print(' Rating:', company['rating'], results[-1])
+
+    print(' Share Price:', company['share-price'])
+    print(' Total Debt:', company['total-debt'])
+    print(' Total Debt/Equity:', company['total-debt-equity'])
+    print(' Total Assets:', company['total-assets'])
+
+    td_ta_ratio = company['total-debt']/company['total-assets']
+    results.append(FAIL if td_ta_ratio > 1.10 else OK)
+    print(' Total Debt to Total Asset ratio:', td_ta_ratio, results[-1])
+
+    results.append(FAIL if company['current-ratio'] > 1.50 else OK)
+    print(' Current Ratio:', company['current-ratio'], results[-1])
+
+    results.append(OK if check_net_income(company) else FAIL)
+    print(' Net Income:', company['latest-net-income'], results[-1])
+
+    results.append(FAIL if company['pe-trailing'] and pe > 9 else OK)
+    print(' P/E (trailing):', company['pe-trailing'], results[-1])
+
+    results.append(FAIL if company['pe-forward'] and pe > 9 else OK)
+    print(' P/E (forward):', company['pe-forward'], results[-1])
+
+    results.append(FAIL if company['p-bv'] >= 1.2 else OK)
+    print(' Price to Book Value:', company['p-bv'], results[-1])
+
+    results.append(OK if company['dividend-forward'] else FAIL)
+    print(' Dividend (forward):', company['dividend-forward'], results[-1])
+
+    if FAIL in results:
+        print(" -> "+Back.RED+Fore.WHITE+"Failed Graham filter"+Style.RESET_ALL)
         return
-    if td_ta_ratio > 1.10:
-        print(' -> Exceeds Total Debt to Current Asset ratio')
-        return
-    if company['current-ratio'] > 1.50:
-        print(' -> Exceeds Current Ratio (current assets divided by current liabilities)')
-        return
-    if not check_net_income(company):
-        pass
-        return
-    if pe > 9:
-        print(' -> Exceeds P/E')
-        return
-    if company['p-bv'] >= 1.2:
-        print(' -> Exceeds Price/Book Value')
-        return
-    if not company['dividend-forward']:
-        print(' -> No dividends')
-        return
-    print(" ", symbol, "is looking good")
+    print(" -> "+Back.GREEN+"Passed Graham filter"+Style.RESET_ALL)
 
 # Parse command line options.
 parser = ArgumentParser()
