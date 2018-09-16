@@ -2,6 +2,10 @@
 
 ## Summary
 
+Disclaimer: If you plan on using this tool for making actual financial
+decisions in production, there is something wrong with you.
+Use it on your own risk.
+
 This is a personal experiment only. The repo contains functions I use
 for stock data collection and analysis.
 
