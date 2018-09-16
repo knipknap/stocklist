@@ -31,7 +31,7 @@ You'll need Python 3 with the modules listed in requirements.txt.
 
 ```
 ./stocklist.py pull AAPL LHA.DE
-./stocklist.py pull-bulk nasdaq-listed.txt
+./stocklist.py pull --filename nasdaq-listed.txt
 ```
 
 ### Graham filter
@@ -56,7 +56,7 @@ To check one or more symbols for Benjamin Graham's 7 criteria:
 The same, but reading the symbols from a file:
 
 ```
-./stocklist.py graham-bulk nasdaq_listed.txt
+./stocklist.py graham --filename nasdaq_listed.txt
 ```
 
 Example output for a stock considered undervalued:
@@ -80,4 +80,18 @@ LEO.DE:
  Price to Book Value: 1.04 -> Ok
  Dividend (forward): 1.4 -> Ok
  -> Passed Graham filter
+```
+
+### More options
+
+There's always `--help`:
+
+```
+$ ./stocklist.py --help
+```
+
+This also provides more options for sub-commands:
+
+```
+$ ./stocklist.py graham --help
 ```
